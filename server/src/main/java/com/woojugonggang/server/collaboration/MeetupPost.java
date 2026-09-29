@@ -49,4 +49,10 @@ public class MeetupPost {
     public String getMatchType() { return matchType; }
     public long getCreatedAt() { return createdAt; }
     public Long getRoomId() { return roomId == null ? id : roomId; }
+    public void update(String category, String title, String description, String tags, String place,
+                       String day, int hour, int capacity, String grade, String department, String matchType) {
+        this.category = category; this.title = title; this.description = description; this.tags = tags;
+        this.place = place; this.day = day; this.hour = hour; this.capacity = capacity;
+        this.grade = grade; this.department = department; this.matchType = matchType;
+    }
 }

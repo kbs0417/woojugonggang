@@ -9,4 +9,5 @@ public interface PostParticipationRepository extends JpaRepository<PostParticipa
     boolean existsByPostIdAndUsername(Long postId, String username);
     Optional<PostParticipation> findByPostIdAndUsername(Long postId, String username);
     List<PostParticipation> findByUsername(String username);
+    void deleteByPostId(Long postId);
 }

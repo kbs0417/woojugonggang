@@ -25,3 +25,12 @@ google-services.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Local installers, JDKs, and class materials (not part of the web app)
+/eclipse-inst-jre-win64.exe
+/jdk-*/
+/java/
+/프로젝트 수행계획서(2026_2)_java응용/
+/*.hwp
+/*.zip
+/대화내용.txt

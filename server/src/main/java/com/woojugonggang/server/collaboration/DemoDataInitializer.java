@@ -4,13 +4,24 @@ import java.util.List;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class DemoDataInitializer {
     @Bean
-    CommandLineRunner seedDemoData(UserAccountRepository users, MeetupPostRepository posts) {
+    CommandLineRunner seedDemoData(UserAccountRepository users, MeetupPostRepository posts,
+                                   PasswordEncoder passwordEncoder,
+                                   @Value("${app.demo-password}") String demoPassword,
+                                   @Value("${app.seed-demo-data:true}") boolean seedDemoData) {
         return args -> {
-            users.findByUsername("admin").orElseGet(() -> users.save(new UserAccount("admin", "김우주")));
+            UserAccount admin = users.findByUsername("admin")
+                    .orElseGet(() -> users.save(new UserAccount("admin", "김우주", passwordEncoder.encode(demoPassword))));
+            if (admin.getPasswordHash() == null || admin.getPasswordHash().isBlank()) {
+                admin.setPasswordHash(passwordEncoder.encode(demoPassword));
+                users.save(admin);
+            }
+            if (!seedDemoData) return;
             if (posts.count() > 0) return;
             long now = System.currentTimeMillis();
             List<MeetupPost> demo = List.of(

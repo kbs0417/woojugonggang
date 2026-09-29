@@ -15,6 +15,10 @@ public class CollaborationController {
     public CollaborationService.UserView login(@RequestBody CollaborationService.LoginRequest request) {
         return service.login(request.username(), request.password());
     }
+    @PostMapping("/auth/register") @ResponseStatus(HttpStatus.CREATED)
+    public CollaborationService.UserView register(@RequestBody CollaborationService.RegisterRequest request) {
+        return service.register(request);
+    }
     @GetMapping("/users/me")
     public CollaborationService.UserView profile(@RequestHeader(USER_HEADER) String username) { return service.profile(username); }
     @PatchMapping("/users/me")
@@ -30,6 +34,11 @@ public class CollaborationController {
     @PostMapping("/posts") @ResponseStatus(HttpStatus.CREATED)
     public CollaborationService.PostView createPost(@RequestHeader(USER_HEADER) String username,
             @RequestBody CollaborationService.PostRequest request) { return service.createPost(username, request); }
+    @PutMapping("/posts/{id}")
+    public CollaborationService.PostView updatePost(@RequestHeader(USER_HEADER) String username, @PathVariable Long id,
+            @RequestBody CollaborationService.PostRequest request) { return service.updatePost(username, id, request); }
+    @DeleteMapping("/posts/{id}") @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePost(@RequestHeader(USER_HEADER) String username, @PathVariable Long id) { service.deletePost(username, id); }
     @PostMapping("/posts/{id}/participants")
     public CollaborationService.PostView join(@RequestHeader(USER_HEADER) String username, @PathVariable Long id) { return service.join(username, id); }
     @DeleteMapping("/posts/{id}/participants/me")
@@ -41,4 +50,12 @@ public class CollaborationController {
     @PostMapping("/chat-rooms/{id}/messages") @ResponseStatus(HttpStatus.CREATED)
     public CollaborationService.MessageView sendMessage(@RequestHeader(USER_HEADER) String username, @PathVariable Long id,
             @RequestBody CollaborationService.MessageRequest request) { return service.sendMessage(username, id, request); }
+    @GetMapping("/notifications")
+    public List<CollaborationService.NotificationView> notifications(@RequestHeader(USER_HEADER) String username) {
+        return service.notifications(username);
+    }
+    @PatchMapping("/notifications/{id}/read")
+    public CollaborationService.NotificationView readNotification(@RequestHeader(USER_HEADER) String username, @PathVariable Long id) {
+        return service.readNotification(username, id);
+    }
 }

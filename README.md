@@ -20,9 +20,9 @@
 ## 기술 구성
 
 - Frontend: HTML, CSS, JavaScript
-- Server: Java 17, Spring Boot, Spring Data JPA, WebSocket
+- Server: Java 17, Spring Boot, Spring Data JPA
 - Database: MySQL
-- API: REST + WebSocket
+- API: REST (채팅은 현재 3초 주기 갱신)
 
 ## 폴더
 
@@ -49,9 +49,9 @@
 
 ## 협업 데모
 
-- 아이디는 협업자별로 서로 다르게, 비밀번호는 기본값 `admin`을 사용합니다.
+- 회원가입으로 협업자별 계정을 생성합니다. 기본 시연 계정은 `admin` / `admin`입니다.
 - 같은 서버에 접속하면 모집글, 참여 인원, 채팅이 모든 브라우저에 공유됩니다.
 - 로컬 데이터는 `server/data` H2 파일에 저장됩니다.
 - 운영에서는 `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` 환경변수로 MySQL을 연결합니다.
 
-> 현재 로그인은 팀 시연용 공용 비밀번호 방식입니다. 외부 공개 전에는 Spring Security, 비밀번호 해시, JWT/세션 인증을 추가해야 합니다.
+> 비밀번호는 BCrypt로 해시되지만 API 요청 인증은 아직 사용자 이름 헤더를 사용합니다. 외부 공개 전에는 JWT 또는 서버 세션 인증을 추가해야 합니다.
