@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "우주공강 Spring Boot 디버그",
+      "request": "launch",
+      "mainClass": "com.woojugonggang.server.WoojooGonggangApplication",
+      "projectName": "server",
+      "cwd": "${workspaceFolder}\\server",
+      "console": "integratedTerminal",
+      "vmArgs": "-Dfile.encoding=UTF-8",
+      "env": {
+        "APP_DEMO_PASSWORD": "admin",
+        "ALLOWED_ORIGINS": "http://localhost:8080,http://127.0.0.1:8080"
+      }
+    }
+  ]
+}

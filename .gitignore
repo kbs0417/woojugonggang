@@ -1,0 +1,27 @@
+# IDE
+.idea/
+*.iml
+
+# Java / Gradle / Maven
+.gradle/
+build/
+target/
+out/
+*.class
+server/data/
+
+# Android
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Environment and secrets
+.env
+application-local.yml
+google-services.json
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db

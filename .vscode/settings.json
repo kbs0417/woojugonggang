@@ -1,0 +1,41 @@
+{
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "java.jdt.ls.java.home": "${workspaceFolder}\\jdk-25.0.4.1",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-17",
+      "path": "${workspaceFolder}\\jdk-25.0.4.1",
+      "default": true
+    }
+  ],
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.import.maven.enabled": true,
+  "java.saveActions.organizeImports": true,
+  "java.test.config": [
+    {
+      "name": "woojugonggang-tests",
+      "workingDirectory": "${workspaceFolder}\\server",
+      "vmArgs": ["-Dfile.encoding=UTF-8"]
+    }
+  ],
+  "java.test.defaultConfig": "woojugonggang-tests",
+  "maven.executable.preferMavenWrapper": true,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "files.exclude": {
+    "**/target": true,
+    "**/server/data": true,
+    "jdk-25.0.4.1": true,
+    "eclipse-inst-jre-win64.exe": true
+  },
+  "files.watcherExclude": {
+    "**/target/**": true,
+    "**/server/data/**": true,
+    "**/jdk-25.0.4.1/**": true
+  },
+  "search.exclude": {
+    "**/target": true,
+    "**/server/data": true,
+    "jdk-25.0.4.1": true
+  }
+}

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="공강 시간을 함께 보낼 사람을 찾는 대학생 커뮤니티">
+    <title>우주공강</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<section class="login-screen" id="loginScreen">
+    <form class="login-card" id="loginForm">
+        <div class="login-logo">✦</div>
+        <span class="eyebrow">우주공강에 오신 것을 환영합니다</span>
+        <h1>로그인</h1>
+        <p>공강을 함께할 학우를 만나보세요.</p>
+        <label>
+            <span>아이디</span>
+            <input id="username" name="username" autocomplete="username" placeholder="아이디를 입력하세요" required>
+        </label>
+        <label>
+            <span>비밀번호</span>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="비밀번호를 입력하세요" required>
+        </label>
+        <p class="login-error" id="loginError" role="alert"></p>
+        <button class="button primary login-submit" type="submit">로그인</button>
+        <small>협업자별로 다른 아이디를 입력하세요. 공용 데모 비밀번호: admin</small>
+    </form>
+</section>
+
+<div class="app-shell" id="appShell" hidden>
+<header class="site-header">
+    <a class="brand" href="#home" aria-label="우주공강 홈">
+        <span class="brand-mark">✦</span>
+        <span>우주공강</span>
+    </a>
+    <nav class="desktop-nav" aria-label="주 메뉴">
+        <a class="active" href="#home">홈</a>
+        <a href="#timetable">시간표</a>
+        <a href="#meetups">모집</a>
+        <a href="#chat">채팅</a>
+        <a href="#profile">내 정보</a>
+    </nav>
+    <button class="profile-button" id="profileButton" type="button" aria-label="내 정보 열기">김우주</button>
+</header>
+
+<main>
+    <section class="hero" id="home">
+        <div>
+            <span class="eyebrow" id="welcomeText">김우주님의 오늘의 공강 · 화요일</span>
+            <h1>비어 있는 시간,<br><strong>새로운 만남으로.</strong></h1>
+            <p>시간표를 등록하면 공강이 같은 학우와 식사, 운동, 공부를 함께할 수 있어요.</p>
+            <div class="hero-actions">
+                <a class="button primary" href="#meetups">모집 둘러보기</a>
+                <a class="button secondary" href="#timetable">시간표 등록</a>
+            </div>
+        </div>
+        <aside class="free-time-card" aria-label="오늘의 공강 시간">
+            <div class="card-topline">
+                <span>오늘의 공강</span>
+                <span class="status-dot">2개</span>
+            </div>
+            <div class="time-slot">
+                <time>11:00</time>
+                <div><strong>1시간 30분</strong><span>점심 모임을 찾아보세요</span></div>
+            </div>
+            <div class="time-slot">
+                <time>15:00</time>
+                <div><strong>2시간</strong><span>운동이나 카페에 딱 좋아요</span></div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="section quick-match-section" id="quick-match">
+        <div class="section-heading">
+            <div><span class="eyebrow">조건 기반 즉시 연결</span><h2>빠른 매칭</h2></div>
+        </div>
+        <form class="match-form" id="quickMatchForm">
+            <label><span>요일</span><select id="matchDay"><option>월</option><option>화</option><option>수</option><option>목</option><option>금</option></select></label>
+            <label><span>공강 시간</span><select id="matchHour"></select></label>
+            <label><span>학년</span><select id="matchGrade"><option value="">무관</option><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+            <label><span>나이</span><input id="matchAge" type="number" min="17" max="100" placeholder="무관"></label>
+            <label><span>성별</span><select id="matchGender"><option value="">무관</option><option>남성</option><option>여성</option></select></label>
+            <label><span>인원 수</span><select id="matchCapacity"><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+            <label><span>학과</span><input id="matchDepartment" placeholder="예: 컴퓨터공학과"></label>
+            <button class="button primary" type="submit">조건으로 매칭</button>
+        </form>
+        <div class="match-result" id="quickMatchResult" hidden></div>
+    </section>
+
+    <section class="section" id="meetups">
+        <div class="section-heading">
+            <div><span class="eyebrow">최근 등록순</span><h2>게시판 매칭</h2></div>
+            <label class="open-only"><input id="openOnlyFilter" type="checkbox" checked> 모집 중만</label>
+        </div>
+        <div class="board-tools">
+            <label class="search-box"><span aria-hidden="true">⌕</span><input id="postSearch" placeholder="태그 검색: java, 프로젝트, 경진대회"></label>
+            <select id="matchTypeFilter" aria-label="매칭 방식"><option value="전체">전체 방식</option><option value="시간표">시간표 매칭</option><option value="상시">상시 매칭</option></select>
+            <select id="postDayFilter" aria-label="요일"><option value="전체">전체 요일</option><option>월</option><option>화</option><option>수</option><option>목</option><option>금</option></select>
+        </div>
+        <div class="category-list" aria-label="모집 카테고리">
+            <button class="category active" type="button" data-category="전체">전체</button>
+            <button class="category" type="button" data-category="학습">📚 학습</button>
+            <button class="category" type="button" data-category="운동">🏃 운동</button>
+            <button class="category" type="button" data-category="동아리">👥 동아리</button>
+            <button class="category" type="button" data-category="취미">🎨 취미</button>
+        </div>
+        <div class="meetup-grid" id="meetupList"></div>
+        <div class="compact-empty" id="postEmpty" hidden><strong>조건에 맞는 게시글이 없습니다.</strong><span>검색어나 필터를 바꿔보세요.</span></div>
+    </section>
+
+    <section class="section timetable-section" id="timetable">
+        <div class="section-heading">
+            <div><span class="eyebrow">이번 주</span><h2>나의 시간표</h2></div>
+            <button class="button small secondary" id="addClassButton" type="button">시간표 수정</button>
+        </div>
+        <p class="timetable-help">보라색은 수업, 흰색은 공강입니다.</p>
+        <div class="timetable-wrap" id="timetableWrap">
+            <div class="timetable-grid" id="timetableGrid" aria-label="나의 주간 시간표"></div>
+        </div>
+    </section>
+
+    <section class="section" id="chat">
+        <div class="section-heading">
+            <div><span class="eyebrow">참여한 모임</span><h2>채팅</h2></div>
+        </div>
+        <div class="chat-room-list" id="chatRoomList"></div>
+    </section>
+
+    <section class="section" id="profile">
+        <div class="section-heading">
+            <div><span class="eyebrow">나의 기본 정보</span><h2>내 정보</h2></div>
+        </div>
+        <form class="profile-card" id="profileForm">
+            <div class="profile-avatar">김</div>
+            <div class="profile-fields">
+                <label class="field"><span>이름</span><input value="김우주" disabled></label>
+                <label class="field"><span>나이</span><input id="profileAge" type="number" min="17" max="100" placeholder="예: 23"></label>
+                <label class="field"><span>성별</span>
+                    <select id="profileGender">
+                        <option value="">선택</option><option>남성</option><option>여성</option><option>기타</option><option>비공개</option>
+                    </select>
+                </label>
+                <label class="field"><span>학과</span><input id="profileDepartment" maxlength="30" placeholder="예: 컴퓨터공학과"></label>
+                <label class="field"><span>학년</span>
+                    <select id="profileGrade">
+                        <option value="">선택</option><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option><option value="4">4학년</option><option value="5">5학년 이상</option>
+                    </select>
+                </label>
+                <div class="profile-actions">
+                    <span class="save-message" id="profileSaveMessage" role="status"></span>
+                    <button class="button primary" type="submit">내 정보 저장</button>
+                </div>
+            </div>
+        </form>
+    </section>
+</main>
+
+<button class="floating-button" type="button" aria-label="수업 추가">＋</button>
+
+<nav class="mobile-nav" aria-label="모바일 주 메뉴">
+    <a class="active" href="#home"><span>⌂</span>홈</a>
+    <a href="#timetable"><span>▦</span>시간표</a>
+    <a href="#meetups"><span>◎</span>모집</a>
+    <a href="#chat"><span>◇</span>채팅</a>
+    <a href="#profile"><span>○</span>내 정보</a>
+</nav>
+</div>
+
+<dialog class="class-dialog" id="classDialog">
+    <form id="classForm">
+        <div class="dialog-heading">
+            <div><span class="eyebrow">5일 × 9시간</span><h2>시간표 수정</h2></div>
+            <button class="icon-button" id="closeClassDialog" type="button" aria-label="닫기">×</button>
+        </div>
+        <div class="selection-guide">
+            <strong>수업이 있는 칸을 눌러 색을 채우세요.</strong>
+            <span>선택된 칸을 다시 누르면 공강으로 변경됩니다. 한 칸은 1시간입니다.</span>
+        </div>
+        <div class="slot-picker" id="slotPicker" aria-label="수업 시간 선택"></div>
+        <p class="dialog-error" id="classError" role="alert"></p>
+        <div class="dialog-actions">
+            <button class="button secondary" id="cancelClassButton" type="button">취소</button>
+            <button class="button primary" type="submit">시간표 저장</button>
+        </div>
+    </form>
+</dialog>
+
+<dialog class="content-dialog" id="meetupDialog">
+    <div class="dialog-heading">
+        <div><span class="eyebrow" id="meetupDetailCategory"></span><h2 id="meetupDetailTitle"></h2></div>
+        <button class="icon-button" id="closeMeetupDialog" type="button" aria-label="닫기">×</button>
+    </div>
+    <div class="meetup-detail-meta">
+        <span id="meetupDetailTime"></span><span id="meetupDetailPlace"></span><span id="meetupDetailMembers"></span>
+    </div>
+    <div class="detail-tags" id="meetupDetailTags"></div>
+    <div class="post-conditions" id="meetupDetailConditions"></div>
+    <p class="meetup-detail-description" id="meetupDetailDescription"></p>
+    <div class="host-card"><span class="mini-avatar" id="hostAvatar">박</span><div><small>작성자 · 모임장</small><strong id="meetupDetailAuthor">박별이</strong></div></div>
+    <div class="dialog-actions">
+        <button class="button secondary" id="meetupChatButton" type="button" hidden>채팅방 입장</button>
+        <button class="button primary" id="joinMeetupButton" type="button">참여하기</button>
+    </div>
+</dialog>
+
+<dialog class="content-dialog chat-dialog" id="chatDialog">
+    <div class="dialog-heading chat-heading">
+        <div><span class="eyebrow">모임 채팅방</span><h2 id="chatDialogTitle"></h2></div>
+        <button class="icon-button" id="closeChatDialog" type="button" aria-label="닫기">×</button>
+    </div>
+    <div class="message-list" id="messageList"></div>
+    <div class="room-recruitment">
+        <div><strong>인원이 부족한가요?</strong><span>방장은 이 채팅방의 모집공고를 한 번 게시할 수 있습니다.</span></div>
+        <button class="button small secondary" id="promoteRoomButton" type="button">모집공고 올리기</button>
+    </div>
+    <form class="message-form" id="messageForm">
+        <input id="messageInput" maxlength="100" placeholder="메시지를 입력하세요" autocomplete="off">
+        <button class="button primary" type="submit">전송</button>
+    </form>
+</dialog>
+
+<dialog class="content-dialog" id="postDialog">
+    <form id="postForm">
+        <div class="dialog-heading">
+            <div><span class="eyebrow">채팅방 추가 모집</span><h2>모집공고 작성</h2></div>
+            <button class="icon-button" id="closePostDialog" type="button" aria-label="닫기">×</button>
+        </div>
+        <div class="post-form-grid">
+            <label class="field"><span>게시판</span><select id="newPostCategory"><option>학습</option><option>운동</option><option>동아리</option><option>취미</option></select></label>
+            <label class="field"><span>목표 인원</span><select id="newPostCapacity"><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+            <label class="field full"><span>제목</span><input id="newPostTitle" maxlength="50" required></label>
+            <label class="field full"><span>태그</span><input id="newPostTags" placeholder="쉼표로 구분: java, 프로젝트" required></label>
+        </div>
+        <p class="dialog-error" id="postError" role="alert"></p>
+        <div class="dialog-actions"><button class="button primary" type="submit">한 번 게시하기</button></div>
+    </form>
+</dialog>
+
+<script src="/js/config.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
