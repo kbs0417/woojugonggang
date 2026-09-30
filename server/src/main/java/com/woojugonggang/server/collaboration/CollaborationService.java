@@ -44,10 +44,16 @@ public class CollaborationService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디는 영문, 숫자, 밑줄로 4자 이상 입력해 주세요.");
         if (password.length() < 8 || password.length() > 72)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호는 8자 이상 입력해 주세요.");
+        if (request.age() == null || request.age() < 17 || request.age() > 100)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "나이는 17세부터 100세까지 입력해 주세요.");
+        String gender = requireText(request.gender(), "성별", 20);
+        String department = requireText(request.department(), "학과", 60);
         if (users.findByUsername(username).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용 중인 아이디입니다.");
-        return UserView.from(users.save(new UserAccount(username, displayName, passwordEncoder.encode(password),
-                cleanList(request.interests(), 200), cleanList(request.interestTags(), 500))));
+        UserAccount user = new UserAccount(username, displayName, passwordEncoder.encode(password),
+                cleanList(request.interests(), 200), cleanList(request.interestTags(), 500));
+        user.update(request.age(), gender, department, "", user.getInterestCategories(), user.getInterestTags());
+        return UserView.from(users.save(user));
     }
 
     @Transactional(readOnly = true)
@@ -237,7 +243,8 @@ public class CollaborationService {
     private static String fallback(String value, String fallback) { String clean = trim(value); return clean.isEmpty() ? fallback : clean; }
 
     public record LoginRequest(String username, String password) {}
-    public record RegisterRequest(String username, String displayName, String password, List<String> interests, List<String> interestTags) {}
+    public record RegisterRequest(String username, String displayName, String password, Integer age, String gender,
+                                  String department, List<String> interests, List<String> interestTags) {}
     public record UserView(String username, String displayName, Integer age, String gender, String department, String grade,
                            List<String> interests, List<String> interestTags) {
         static UserView from(UserAccount u) { return new UserView(u.getUsername(), u.getDisplayName(), u.getAge(), u.getGender(),

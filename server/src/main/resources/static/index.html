@@ -32,7 +32,6 @@
             </label>
             <p class="login-error" id="loginError" role="alert"></p>
             <button class="button primary login-submit" type="submit">로그인</button>
-            <small>시연 계정: admin / admin</small>
         </form>
         <form id="registerForm" hidden>
             <h1>회원가입</h1>
@@ -40,6 +39,34 @@
             <label>
                 <span>이름</span>
                 <input id="registerName" autocomplete="name" maxlength="40" placeholder="이름을 입력하세요" required>
+            </label>
+            <div class="auth-profile-grid">
+                <label>
+                    <span>나이</span>
+                    <input id="registerAge" type="number" min="17" max="100" inputmode="numeric" placeholder="예: 23" required>
+                </label>
+                <label>
+                    <span>성별</span>
+                    <select id="registerGender" required>
+                        <option value="" selected disabled>선택하세요</option>
+                        <option value="남성">남성</option>
+                        <option value="여성">여성</option>
+                        <option value="기타">기타</option>
+                        <option value="응답하지 않음">응답하지 않음</option>
+                    </select>
+                </label>
+            </div>
+            <label>
+                <span>학과</span>
+                <input id="registerDepartment" list="departmentOptions" maxlength="60" placeholder="학과를 선택하거나 입력하세요" required>
+                <datalist id="departmentOptions">
+                    <option value="컴퓨터공학과"></option>
+                    <option value="소프트웨어학과"></option>
+                    <option value="전자공학과"></option>
+                    <option value="기계공학과"></option>
+                    <option value="경영학과"></option>
+                    <option value="자유전공학과"></option>
+                </datalist>
             </label>
             <label>
                 <span>아이디</span>

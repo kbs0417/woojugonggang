@@ -79,6 +79,9 @@ $("#registerForm").addEventListener("submit", async e => {
             displayName: $("#registerName").value.trim(),
             username: $("#registerUsername").value.trim(),
             password,
+            age: Number($("#registerAge").value),
+            gender: $("#registerGender").value,
+            department: $("#registerDepartment").value.trim(),
             interests: checkedValues("registerInterest"),
             interestTags: commaValues($("#registerInterestTags").value)
         }) });

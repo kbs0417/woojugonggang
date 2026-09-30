@@ -40,10 +40,12 @@ input, select { font: inherit; }
 .auth-tab { min-height: 42px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; font-weight: 800; }
 .auth-tab.active { color: var(--primary); background: white; box-shadow: 0 4px 14px rgba(45, 40, 85, .09); }
 .login-card label, .field { display: grid; gap: 8px; margin-top: 16px; color: var(--ink); font-size: 14px; font-weight: 700; }
-.login-card input, .field input, .field select, .field textarea { width: 100%; height: 50px; padding: 0 15px; border: 1px solid var(--line); border-radius: 13px; outline: none; background: #fbfaff; }
+.login-card input, .login-card select, .field input, .field select, .field textarea { width: 100%; height: 50px; padding: 0 15px; border: 1px solid var(--line); border-radius: 13px; outline: none; background: #fbfaff; }
 .field textarea { height: 110px; padding-top: 14px; resize: vertical; }
-.login-card input:focus, .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.login-card input:focus, .login-card select:focus, .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 .field input:disabled { color: var(--muted); background: #f1f0f5; }
+.auth-profile-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 12px; }
+.auth-profile-grid label { min-width: 0; }
 .login-submit { width: 100%; margin-top: 6px; }
 .login-card small { display: block; margin-top: 16px; color: var(--muted); text-align: center; }
 .interest-fieldset { margin: 18px 0 0; padding: 0; border: 0; }
@@ -254,6 +256,7 @@ h2 { margin: 8px 0 0; font-size: 34px; letter-spacing: -.04em; }
 
 @media (max-width: 460px) {
     h1 { font-size: 38px; }
+    .auth-profile-grid { grid-template-columns: 1fr; gap: 0; }
     .hero-actions { flex-direction: column; }
     .button { width: 100%; }
     .section-heading > .button { display: none; }
