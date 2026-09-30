@@ -50,6 +50,11 @@ input, select { font: inherit; }
 .login-card small { display: block; margin-top: 16px; color: var(--muted); text-align: center; }
 .interest-fieldset { margin: 18px 0 0; padding: 0; border: 0; }
 .interest-fieldset legend, .profile-interest-fieldset legend { margin-bottom: 9px; font-size: 14px; font-weight: 700; }
+.interest-fieldset legend small, .profile-interest-fieldset legend small { display: inline; margin: 0 0 0 6px; font-size: 12px; font-weight: 500; }
+.interest-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.login-card .interest-groups { grid-template-columns: 1fr; }
+.interest-group { padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: #fbfaff; }
+.interest-group strong { display: block; margin-bottom: 9px; font-size: 13px; }
 .interest-options { display: flex; flex-wrap: wrap; gap: 8px; }
 .interest-options label { display: flex; align-items: center; gap: 6px; margin: 0; padding: 9px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: #fbfaff; font-size: 13px; cursor: pointer; }
 .interest-options label:has(input:checked) { color: var(--primary-dark); border-color: #c7c1ff; background: var(--primary-soft); }
@@ -257,6 +262,7 @@ h2 { margin: 8px 0 0; font-size: 34px; letter-spacing: -.04em; }
 @media (max-width: 460px) {
     h1 { font-size: 38px; }
     .auth-profile-grid { grid-template-columns: 1fr; gap: 0; }
+    .interest-groups { grid-template-columns: 1fr; }
     .hero-actions { flex-direction: column; }
     .button { width: 100%; }
     .section-heading > .button { display: none; }

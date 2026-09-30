@@ -11,9 +11,9 @@ function readUser() { try { return JSON.parse(localStorage.getItem("woojoo-user"
 function saveUser(value) { localStorage.setItem("woojoo-user", JSON.stringify(value)); sessionStorage.removeItem("woojoo-user"); }
 function clearUser() { localStorage.removeItem("woojoo-user"); sessionStorage.removeItem("woojoo-user"); }
 function esc(v) { return String(v).replace(/[&<>'"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[c]); }
-function commaValues(value) { return value.split(",").map(item => item.trim()).filter(Boolean); }
 function checkedValues(name) { return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(input => input.value); }
 function setCheckedValues(name, values = []) { document.querySelectorAll(`input[name="${name}"]`).forEach(input => input.checked = values.includes(input.value)); }
+function checkedInterestCategories(name) { return [...new Set([...document.querySelectorAll(`input[name="${name}"]:checked`)].map(input => input.dataset.category))]; }
 function showStatus(message, type = "info", timeout = 2600) {
     clearTimeout(statusTimer); const box = $("#appStatus"); box.textContent = message; box.className = `app-status ${type}`; box.hidden = false;
     if (timeout) statusTimer = setTimeout(() => box.hidden = true, timeout);
@@ -82,8 +82,8 @@ $("#registerForm").addEventListener("submit", async e => {
             age: Number($("#registerAge").value),
             gender: $("#registerGender").value,
             department: $("#registerDepartment").value.trim(),
-            interests: checkedValues("registerInterest"),
-            interestTags: commaValues($("#registerInterestTags").value)
+            interests: checkedInterestCategories("registerInterestDetail"),
+            interestDetails: checkedValues("registerInterestDetail")
         }) });
         saveUser(user);
         await start();
@@ -322,12 +322,12 @@ $("#quickMatchForm").addEventListener("submit", e => {
 $("#quickMatchResult").addEventListener("click", e => { const item = e.target.closest("[data-match-post]"); if (item) openPost(Number(item.dataset.matchPost)); });
 function loadProfile() {
     $("#profileAge").value = user.age || ""; $("#profileGender").value = user.gender || ""; $("#profileDepartment").value = user.department || ""; $("#profileGrade").value = user.grade || "";
-    setCheckedValues("profileInterest", user.interests || []); $("#profileInterestTags").value = (user.interestTags || []).join(", ");
+    setCheckedValues("profileInterestDetail", user.interestDetails || []);
 }
 $("#profileForm").addEventListener("submit", async e => {
     e.preventDefault();
     try {
-        user = await request("/api/users/me", { method: "PATCH", body: JSON.stringify({ age: $("#profileAge").value ? Number($("#profileAge").value) : null, gender: $("#profileGender").value, department: $("#profileDepartment").value.trim(), grade: $("#profileGrade").value, interests: checkedValues("profileInterest"), interestTags: commaValues($("#profileInterestTags").value) }) });
+        user = await request("/api/users/me", { method: "PATCH", body: JSON.stringify({ age: $("#profileAge").value ? Number($("#profileAge").value) : null, gender: $("#profileGender").value, department: $("#profileDepartment").value.trim(), grade: $("#profileGrade").value, interests: checkedInterestCategories("profileInterestDetail"), interestDetails: checkedValues("profileInterestDetail") }) });
         saveUser(user); $("#profileSaveMessage").textContent = "저장되었습니다."; setTimeout(() => $("#profileSaveMessage").textContent = "", 2000);
     } catch (error) { fail(error); }
 });

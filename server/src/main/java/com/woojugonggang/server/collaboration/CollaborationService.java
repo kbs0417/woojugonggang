@@ -51,7 +51,7 @@ public class CollaborationService {
         if (users.findByUsername(username).isPresent())
             throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 사용 중인 아이디입니다.");
         UserAccount user = new UserAccount(username, displayName, passwordEncoder.encode(password),
-                cleanList(request.interests(), 200), cleanList(request.interestTags(), 500));
+                cleanList(request.interests(), 200), cleanList(request.interestDetails(), 500));
         user.update(request.age(), gender, department, "", user.getInterestCategories(), user.getInterestTags());
         return UserView.from(users.save(user));
     }
@@ -62,7 +62,7 @@ public class CollaborationService {
     public UserView updateProfile(String username, ProfileRequest request) {
         UserAccount user = requireUser(username);
         user.update(request.age(), trim(request.gender()), trim(request.department()), trim(request.grade()),
-                cleanList(request.interests(), 200), cleanList(request.interestTags(), 500));
+                cleanList(request.interests(), 200), cleanList(request.interestDetails(), 500));
         return UserView.from(user);
     }
 
@@ -217,7 +217,7 @@ public class CollaborationService {
     }
     private static String cleanList(List<String> values, int max) {
         String result = String.join(",", values == null ? List.of() : values.stream().map(String::trim).filter(s -> !s.isBlank()).distinct().toList());
-        if (result.length() > max) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관심사 또는 해시태그가 너무 깁니다.");
+        if (result.length() > max) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "관심 분야 선택값이 너무 깁니다.");
         return result;
     }
     private static Set<String> splitSet(String value) {
@@ -244,13 +244,13 @@ public class CollaborationService {
 
     public record LoginRequest(String username, String password) {}
     public record RegisterRequest(String username, String displayName, String password, Integer age, String gender,
-                                  String department, List<String> interests, List<String> interestTags) {}
+                                  String department, List<String> interests, List<String> interestDetails) {}
     public record UserView(String username, String displayName, Integer age, String gender, String department, String grade,
-                           List<String> interests, List<String> interestTags) {
+                           List<String> interests, List<String> interestDetails) {
         static UserView from(UserAccount u) { return new UserView(u.getUsername(), u.getDisplayName(), u.getAge(), u.getGender(),
                 u.getDepartment(), u.getGrade(), new ArrayList<>(splitSet(u.getInterestCategories())), new ArrayList<>(splitSet(u.getInterestTags()))); }
     }
-    public record ProfileRequest(Integer age, String gender, String department, String grade, List<String> interests, List<String> interestTags) {}
+    public record ProfileRequest(Integer age, String gender, String department, String grade, List<String> interests, List<String> interestDetails) {}
     public record CourseRequest(String day, int hour) {}
     public record CourseView(Long id, String day, int hour) { static CourseView from(CourseSlot c) { return new CourseView(c.getId(), c.getDay(), c.getHour()); } }
     public record PostRequest(String category, String title, List<String> tags, String description, String place, String day,

@@ -79,11 +79,12 @@ class CollaborationApiTest {
         mockMvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + username + "\",\"displayName\":\"" + displayName
                                 + "\",\"password\":\"password123\",\"age\":23,\"gender\":\"남성\","
-                                + "\"department\":\"컴퓨터공학과\",\"interests\":[\"학습\"],\"interestTags\":[\"api\"]}"))
+                                + "\"department\":\"컴퓨터공학과\",\"interests\":[\"학습\"],\"interestDetails\":[\"프로젝트\"]}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.username").value(username))
                 .andExpect(jsonPath("$.age").value(23))
                 .andExpect(jsonPath("$.gender").value("남성"))
-                .andExpect(jsonPath("$.department").value("컴퓨터공학과"));
+                .andExpect(jsonPath("$.department").value("컴퓨터공학과"))
+                .andExpect(jsonPath("$.interestDetails[0]").value("프로젝트"));
     }
 }

@@ -81,18 +81,42 @@
                 <input id="registerPasswordConfirm" type="password" autocomplete="new-password" minlength="8" maxlength="72" placeholder="비밀번호를 다시 입력하세요" required>
             </label>
             <fieldset class="interest-fieldset">
-                <legend>관심사</legend>
-                <div class="interest-options">
-                    <label><input type="checkbox" name="registerInterest" value="학습">📚 학습</label>
-                    <label><input type="checkbox" name="registerInterest" value="운동">🏃 운동</label>
-                    <label><input type="checkbox" name="registerInterest" value="동아리">👥 동아리</label>
-                    <label><input type="checkbox" name="registerInterest" value="취미">🎨 취미</label>
+                <legend>관심 분야 <small>여러 개 선택할 수 있어요</small></legend>
+                <div class="interest-groups">
+                    <section class="interest-group">
+                        <strong>📚 학습</strong>
+                        <div class="interest-options">
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="학습" value="시험·자격증">시험·자격증</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="학습" value="전공 공부">전공 공부</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="학습" value="프로젝트">프로젝트</label>
+                        </div>
+                    </section>
+                    <section class="interest-group">
+                        <strong>🏃 운동</strong>
+                        <div class="interest-options">
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="운동" value="헬스">헬스</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="운동" value="러닝">러닝</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="운동" value="구기 운동">구기 운동</label>
+                        </div>
+                    </section>
+                    <section class="interest-group">
+                        <strong>👥 동아리</strong>
+                        <div class="interest-options">
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="동아리" value="전공 동아리">전공</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="동아리" value="봉사 동아리">봉사</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="동아리" value="친목 동아리">친목</label>
+                        </div>
+                    </section>
+                    <section class="interest-group">
+                        <strong>🎨 취미</strong>
+                        <div class="interest-options">
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="취미" value="게임">게임</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="취미" value="영화·공연">영화·공연</label>
+                            <label><input type="checkbox" name="registerInterestDetail" data-category="취미" value="맛집·카페">맛집·카페</label>
+                        </div>
+                    </section>
                 </div>
             </fieldset>
-            <label>
-                <span>관심 해시태그</span>
-                <input id="registerInterestTags" maxlength="200" placeholder="쉼표로 구분: Java, 프로젝트">
-            </label>
             <p class="login-error" id="registerError" role="alert"></p>
             <button class="button primary login-submit" type="submit">계정 만들기</button>
         </form>
@@ -219,15 +243,42 @@
                     </select>
                 </label>
                 <fieldset class="field full profile-interest-fieldset">
-                    <legend>관심사</legend>
-                    <div class="interest-options">
-                        <label><input type="checkbox" name="profileInterest" value="학습">📚 학습</label>
-                        <label><input type="checkbox" name="profileInterest" value="운동">🏃 운동</label>
-                        <label><input type="checkbox" name="profileInterest" value="동아리">👥 동아리</label>
-                        <label><input type="checkbox" name="profileInterest" value="취미">🎨 취미</label>
+                    <legend>관심 분야 <small>여러 개 선택할 수 있어요</small></legend>
+                    <div class="interest-groups">
+                        <section class="interest-group">
+                            <strong>📚 학습</strong>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="학습" value="시험·자격증">시험·자격증</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="학습" value="전공 공부">전공 공부</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="학습" value="프로젝트">프로젝트</label>
+                            </div>
+                        </section>
+                        <section class="interest-group">
+                            <strong>🏃 운동</strong>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="운동" value="헬스">헬스</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="운동" value="러닝">러닝</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="운동" value="구기 운동">구기 운동</label>
+                            </div>
+                        </section>
+                        <section class="interest-group">
+                            <strong>👥 동아리</strong>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="동아리" value="전공 동아리">전공</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="동아리" value="봉사 동아리">봉사</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="동아리" value="친목 동아리">친목</label>
+                            </div>
+                        </section>
+                        <section class="interest-group">
+                            <strong>🎨 취미</strong>
+                            <div class="interest-options">
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="취미" value="게임">게임</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="취미" value="영화·공연">영화·공연</label>
+                                <label><input type="checkbox" name="profileInterestDetail" data-category="취미" value="맛집·카페">맛집·카페</label>
+                            </div>
+                        </section>
                     </div>
                 </fieldset>
-                <label class="field full"><span>관심 해시태그</span><input id="profileInterestTags" maxlength="200" placeholder="쉼표로 구분: Java, 프로젝트"></label>
                 <div class="profile-actions">
                     <span class="save-message" id="profileSaveMessage" role="status"></span>
                     <button class="button primary" type="submit">내 정보 저장</button>
