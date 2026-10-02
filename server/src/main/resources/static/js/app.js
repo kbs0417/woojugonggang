@@ -1,9 +1,29 @@
 const $ = (s) => document.querySelector(s);
 const icons = { 학습: "📚", 운동: "🏃", 동아리: "👥", 취미: "🎨" };
+const interestDetailsByCategory = {
+    학습: ["시험·자격증", "전공 공부", "프로젝트"],
+    운동: ["헬스", "러닝", "구기 운동"],
+    동아리: ["전공 동아리", "봉사 동아리", "친목 동아리"],
+    취미: ["게임", "영화·공연", "맛집·카페"]
+};
+const interestKeywords = {
+    "시험·자격증": ["시험", "자격증"],
+    "전공 공부": ["전공", "공부", "스터디", "자료구조"],
+    "프로젝트": ["프로젝트", "개발", "포트폴리오", "경진대회"],
+    "헬스": ["헬스", "웨이트", "근력"],
+    "러닝": ["러닝", "달리기", "조깅"],
+    "구기 운동": ["축구", "농구", "야구", "배구", "배드민턴", "테니스", "구기"],
+    "전공 동아리": ["전공", "개발동아리", "학술동아리"],
+    "봉사 동아리": ["봉사"],
+    "친목 동아리": ["친목", "친구", "모임"],
+    "게임": ["게임", "보드게임", "e스포츠"],
+    "영화·공연": ["영화", "공연", "연극", "뮤지컬"],
+    "맛집·카페": ["맛집", "카페", "식사", "디저트"]
+};
 const days = ["월", "화", "수", "목", "금"], hours = Array.from({ length: 9 }, (_, i) => i + 9);
 const API = window.WOOJOO_API_URL || "";
 let user = readUser(), courses = [], posts = [], rooms = [], messages = [], noticeItems = [];
-let category = "전체", selected = new Set(), postId = null, roomId = null, chatTimer, statusTimer;
+let category = "전체", interestDetail = "전체", selected = new Set(), postId = null, roomId = null, chatTimer, statusTimer;
 let postMode = "create", editingPostId = null;
 const unreadByRoom = new Map();
 
@@ -38,7 +58,7 @@ async function start() {
         $("#loginScreen").hidden = true; $("#appShell").hidden = false;
         $("#profileButton").textContent = user.displayName; $("#welcomeText").textContent = `${user.displayName}님의 오늘의 공강`;
         $("#profileForm input[disabled]").value = user.displayName; $(".profile-avatar").textContent = user.displayName[0];
-        loadProfile(); renderPosts(); renderCourses(); renderRooms(); renderFreeTimes(); renderNotifications(); refreshUnreadCounts();
+        loadProfile(); renderInterestFilters(); renderPosts(); renderCourses(); renderRooms(); renderFreeTimes(); renderNotifications(); refreshUnreadCounts();
         requestAnimationFrame(syncNavigationFromScroll);
     } catch (error) {
         clearUser(); user = null; $("#loginScreen").hidden = false; $("#appShell").hidden = true;
@@ -125,11 +145,29 @@ window.addEventListener("scroll", syncNavigationFromScroll, { passive: true });
 activateNavigation(location.hash.slice(1));
 
 function full(p) { return p.current >= p.capacity; }
+function normalizedPostText(p) {
+    return [p.title, p.description, ...(p.tags || [])].join(" ").toLowerCase().replace(/\s+/g, "");
+}
+function matchesInterestDetail(p, detail) {
+    const text = normalizedPostText(p);
+    return (interestKeywords[detail] || [detail]).some(keyword => text.includes(keyword.toLowerCase().replace(/\s+/g, "")));
+}
+function renderInterestFilters() {
+    const personal = Array.isArray(user?.interestDetails) ? user.interestDetails : [];
+    const details = category === "전체" ? personal : (interestDetailsByCategory[category] || []);
+    const panel = $("#interestFilterPanel");
+    if (!details.includes(interestDetail)) interestDetail = "전체";
+    panel.hidden = details.length === 0;
+    if (!details.length) return;
+    $("#interestFilterTitle").textContent = category === "전체" ? "내 관심사로 찾기" : `${icons[category]} ${category} 세부 필터`;
+    $("#interestFilterList").innerHTML = ["전체", ...details].map(detail => `<button class="interest-filter ${interestDetail === detail ? "active" : ""}" type="button" data-interest-detail="${esc(detail)}">${detail === "전체" ? "전체 보기" : esc(detail)}</button>`).join("");
+}
 function renderPosts() {
     const q = $("#postSearch").value.trim().toLowerCase(), type = $("#matchTypeFilter").value, day = $("#postDayFilter").value;
     const list = posts.filter(p => category === "전체" || p.category === category).filter(p => type === "전체" || p.matchType === type)
         .filter(p => day === "전체" || p.day === day).filter(p => !$("#openOnlyFilter").checked || !full(p))
-        .filter(p => !q || p.tags.some(t => t.toLowerCase().includes(q))).sort((a, b) => b.createdAt - a.createdAt);
+        .filter(p => interestDetail === "전체" || matchesInterestDetail(p, interestDetail))
+        .filter(p => !q || normalizedPostText(p).includes(q.replace(/\s+/g, ""))).sort((a, b) => b.createdAt - a.createdAt);
     $("#meetupList").innerHTML = list.map(p => `<button class="meetup-card" type="button" data-post="${p.id}">
         <div class="meetup-meta"><span>${icons[p.category] || "✨"} ${esc(p.category)} · ${esc(p.matchType)} 매칭</span><span class="visibility-badge ${full(p) ? "private" : ""}">${full(p) ? "비공개 · 마감" : "공개 · 모집중"}</span></div>
         <h3>${esc(p.title)}</h3><span class="post-author">작성자 ${esc(p.author)} · ${esc(p.time)}</span>
@@ -138,8 +176,15 @@ function renderPosts() {
     $("#postEmpty").hidden = list.length > 0;
 }
 document.querySelectorAll(".category").forEach(button => button.addEventListener("click", () => {
-    document.querySelectorAll(".category").forEach(b => b.classList.remove("active")); button.classList.add("active"); category = button.dataset.category; renderPosts();
+    document.querySelectorAll(".category").forEach(b => b.classList.remove("active")); button.classList.add("active"); category = button.dataset.category; interestDetail = "전체"; renderInterestFilters(); renderPosts();
 }));
+$("#interestFilterList").addEventListener("click", e => {
+    const button = e.target.closest("[data-interest-detail]");
+    if (!button) return;
+    interestDetail = button.dataset.interestDetail;
+    renderInterestFilters();
+    renderPosts();
+});
 ["#postSearch", "#matchTypeFilter", "#postDayFilter", "#openOnlyFilter"].forEach(s => $(s).addEventListener("input", renderPosts));
 $("#meetupList").addEventListener("click", e => { const card = e.target.closest("[data-post]"); if (card) openPost(Number(card.dataset.post)); });
 function openPost(id) {
@@ -328,7 +373,7 @@ $("#profileForm").addEventListener("submit", async e => {
     e.preventDefault();
     try {
         user = await request("/api/users/me", { method: "PATCH", body: JSON.stringify({ age: $("#profileAge").value ? Number($("#profileAge").value) : null, gender: $("#profileGender").value, department: $("#profileDepartment").value.trim(), grade: $("#profileGrade").value, interests: checkedInterestCategories("profileInterestDetail"), interestDetails: checkedValues("profileInterestDetail") }) });
-        saveUser(user); $("#profileSaveMessage").textContent = "저장되었습니다."; setTimeout(() => $("#profileSaveMessage").textContent = "", 2000);
+        saveUser(user); interestDetail = "전체"; renderInterestFilters(); renderPosts(); $("#profileSaveMessage").textContent = "저장되었습니다."; setTimeout(() => $("#profileSaveMessage").textContent = "", 2000);
     } catch (error) { fail(error); }
 });
 $("#profileButton").addEventListener("click", () => $("#profile").scrollIntoView({ behavior: "smooth" }));
