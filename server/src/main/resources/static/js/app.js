@@ -6,6 +6,12 @@ const interestDetailsByCategory = {
     동아리: ["전공 동아리", "봉사 동아리", "친목 동아리"],
     취미: ["게임", "영화·공연", "맛집·카페"]
 };
+const interestDetailLabels = {
+    "시험·자격증": "시험", "전공 공부": "전공공부", "프로젝트": "프로젝트",
+    "헬스": "헬스", "러닝": "러닝", "구기 운동": "구기운동",
+    "전공 동아리": "전공", "봉사 동아리": "봉사", "친목 동아리": "친목",
+    "게임": "게임", "영화·공연": "영화·공연", "맛집·카페": "맛집·카페"
+};
 const interestKeywords = {
     "시험·자격증": ["시험", "자격증"],
     "전공 공부": ["전공", "공부", "스터디", "자료구조"],
@@ -22,6 +28,7 @@ const interestKeywords = {
 };
 const days = ["월", "화", "수", "목", "금"], hours = Array.from({ length: 9 }, (_, i) => i + 9);
 const API = window.WOOJOO_API_URL || "";
+const DEMO_MODE = !API && location.hostname.endsWith(".vercel.app") && typeof window.WOOJOO_DEMO_API === "function";
 let user = readUser(), courses = [], posts = [], rooms = [], messages = [], noticeItems = [];
 let category = "전체", interestDetail = "전체", selected = new Set(), postId = null, roomId = null, chatTimer, statusTimer;
 let postMode = "create", editingPostId = null;
@@ -39,6 +46,7 @@ function showStatus(message, type = "info", timeout = 2600) {
     if (timeout) statusTimer = setTimeout(() => box.hidden = true, timeout);
 }
 async function request(path, options = {}) {
+    if (DEMO_MODE) return window.WOOJOO_DEMO_API(path, options, user?.username);
     const headers = { "Content-Type": "application/json", ...(options.headers || {}) };
     if (user?.username) headers["X-User-Name"] = user.username;
     const response = await fetch(API + path, { ...options, headers });
@@ -160,7 +168,7 @@ function renderInterestFilters() {
     panel.hidden = details.length === 0;
     if (!details.length) return;
     $("#interestFilterTitle").textContent = category === "전체" ? "내 관심사로 찾기" : `${icons[category]} ${category} 세부 필터`;
-    $("#interestFilterList").innerHTML = ["전체", ...details].map(detail => `<button class="interest-filter ${interestDetail === detail ? "active" : ""}" type="button" data-interest-detail="${esc(detail)}">${detail === "전체" ? "전체 보기" : esc(detail)}</button>`).join("");
+    $("#interestFilterList").innerHTML = ["전체", ...details].map(detail => `<button class="interest-filter ${interestDetail === detail ? "active" : ""}" type="button" data-interest-detail="${esc(detail)}">${detail === "전체" ? "전체 보기" : `# ${esc(interestDetailLabels[detail] || detail)}`}</button>`).join("");
 }
 function renderPosts() {
     const q = $("#postSearch").value.trim().toLowerCase(), type = $("#matchTypeFilter").value, day = $("#postDayFilter").value;
