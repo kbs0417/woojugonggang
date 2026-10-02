@@ -30,7 +30,7 @@ const days = ["월", "화", "수", "목", "금"], hours = Array.from({ length: 9
 const API = window.WOOJOO_API_URL || "";
 const DEMO_MODE = !API && location.hostname.endsWith(".vercel.app") && typeof window.WOOJOO_DEMO_API === "function";
 let user = readUser(), courses = [], posts = [], rooms = [], messages = [], noticeItems = [];
-let category = "전체", interestDetail = "전체", selected = new Set(), postId = null, roomId = null, chatTimer, statusTimer;
+let category = "전체", selectedInterestDetails = new Set(), selected = new Set(), postId = null, roomId = null, chatTimer, statusTimer;
 let postMode = "create", editingPostId = null;
 const unreadByRoom = new Map();
 
@@ -161,20 +161,19 @@ function matchesInterestDetail(p, detail) {
     return (interestKeywords[detail] || [detail]).some(keyword => text.includes(keyword.toLowerCase().replace(/\s+/g, "")));
 }
 function renderInterestFilters() {
-    const personal = Array.isArray(user?.interestDetails) ? user.interestDetails : [];
-    const details = category === "전체" ? personal : (interestDetailsByCategory[category] || []);
+    const details = category === "전체" ? [] : (interestDetailsByCategory[category] || []);
     const panel = $("#interestFilterPanel");
-    if (!details.includes(interestDetail)) interestDetail = "전체";
+    selectedInterestDetails = new Set([...selectedInterestDetails].filter(detail => details.includes(detail)));
     panel.hidden = details.length === 0;
-    if (!details.length) return;
-    $("#interestFilterTitle").textContent = category === "전체" ? "내 관심사로 찾기" : `${icons[category]} ${category} 세부 필터`;
-    $("#interestFilterList").innerHTML = ["전체", ...details].map(detail => `<button class="interest-filter ${interestDetail === detail ? "active" : ""}" type="button" data-interest-detail="${esc(detail)}">${detail === "전체" ? "전체 보기" : `# ${esc(interestDetailLabels[detail] || detail)}`}</button>`).join("");
+    if (!details.length) { $("#interestFilterList").innerHTML = ""; return; }
+    $("#interestFilterTitle").textContent = `${icons[category]} ${category} 세부 필터`;
+    $("#interestFilterList").innerHTML = details.map(detail => `<button class="interest-filter ${selectedInterestDetails.has(detail) ? "active" : ""}" type="button" data-interest-detail="${esc(detail)}" aria-pressed="${selectedInterestDetails.has(detail)}"># ${esc(interestDetailLabels[detail] || detail)}</button>`).join("");
 }
 function renderPosts() {
     const q = $("#postSearch").value.trim().toLowerCase(), type = $("#matchTypeFilter").value, day = $("#postDayFilter").value;
     const list = posts.filter(p => category === "전체" || p.category === category).filter(p => type === "전체" || p.matchType === type)
         .filter(p => day === "전체" || p.day === day).filter(p => !$("#openOnlyFilter").checked || !full(p))
-        .filter(p => interestDetail === "전체" || matchesInterestDetail(p, interestDetail))
+        .filter(p => selectedInterestDetails.size === 0 || [...selectedInterestDetails].some(detail => matchesInterestDetail(p, detail)))
         .filter(p => !q || normalizedPostText(p).includes(q.replace(/\s+/g, ""))).sort((a, b) => b.createdAt - a.createdAt);
     $("#meetupList").innerHTML = list.map(p => `<button class="meetup-card" type="button" data-post="${p.id}">
         <div class="meetup-meta"><span>${icons[p.category] || "✨"} ${esc(p.category)} · ${esc(p.matchType)} 매칭</span><span class="visibility-badge ${full(p) ? "private" : ""}">${full(p) ? "비공개 · 마감" : "공개 · 모집중"}</span></div>
@@ -184,12 +183,13 @@ function renderPosts() {
     $("#postEmpty").hidden = list.length > 0;
 }
 document.querySelectorAll(".category").forEach(button => button.addEventListener("click", () => {
-    document.querySelectorAll(".category").forEach(b => b.classList.remove("active")); button.classList.add("active"); category = button.dataset.category; interestDetail = "전체"; renderInterestFilters(); renderPosts();
+    document.querySelectorAll(".category").forEach(b => b.classList.remove("active")); button.classList.add("active"); category = button.dataset.category; selectedInterestDetails.clear(); renderInterestFilters(); renderPosts();
 }));
 $("#interestFilterList").addEventListener("click", e => {
     const button = e.target.closest("[data-interest-detail]");
     if (!button) return;
-    interestDetail = button.dataset.interestDetail;
+    const detail = button.dataset.interestDetail;
+    if (selectedInterestDetails.has(detail)) selectedInterestDetails.delete(detail); else selectedInterestDetails.add(detail);
     renderInterestFilters();
     renderPosts();
 });
@@ -381,7 +381,7 @@ $("#profileForm").addEventListener("submit", async e => {
     e.preventDefault();
     try {
         user = await request("/api/users/me", { method: "PATCH", body: JSON.stringify({ age: $("#profileAge").value ? Number($("#profileAge").value) : null, gender: $("#profileGender").value, department: $("#profileDepartment").value.trim(), grade: $("#profileGrade").value, interests: checkedInterestCategories("profileInterestDetail"), interestDetails: checkedValues("profileInterestDetail") }) });
-        saveUser(user); interestDetail = "전체"; renderInterestFilters(); renderPosts(); $("#profileSaveMessage").textContent = "저장되었습니다."; setTimeout(() => $("#profileSaveMessage").textContent = "", 2000);
+        saveUser(user); selectedInterestDetails.clear(); renderInterestFilters(); renderPosts(); $("#profileSaveMessage").textContent = "저장되었습니다."; setTimeout(() => $("#profileSaveMessage").textContent = "", 2000);
     } catch (error) { fail(error); }
 });
 $("#profileButton").addEventListener("click", () => $("#profile").scrollIntoView({ behavior: "smooth" }));
